@@ -5365,7 +5365,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     addToCart: 'addToCart',
     // this is the function from store.js
     removeFromCart: 'removeFromCart',
-    triggerCheckout: 'triggerCheckout'
+    triggerCheckoutPlus: 'triggerCheckoutPlus'
   }))
 });
 
@@ -5421,6 +5421,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5437,7 +5472,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapMutations)({
     addToCart: 'addToCart',
     // this is the function from store.js
-    removeFromCart: 'removeFromCart'
+    removeFromCart: 'removeFromCart',
+    triggerCheckoutPlus: 'triggerCheckoutPlus',
+    triggerCheckoutMinus: 'triggerCheckoutMinus'
   }))
 });
 
@@ -5560,15 +5597,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
 
-
-vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2__["default"]);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     allProduct: [{
       id: 1,
@@ -5640,14 +5674,14 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
         return item.id == id;
       });
       var cart = state.carts.find(function (item) {
-        return item.idProduk == id;
+        return item.id == id;
       });
       produk.carts_qty++;
       produk.qty--;
       state.totalCartsQty++;
       if (!cart) {
         var cartItems = {
-          idProduk: produk.id,
+          id: produk.id,
           album: produk.album,
           artist: produk.artist,
           price: produk.price,
@@ -5670,10 +5704,8 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
       } else {
         state.totalCartsQty = 0;
       }
-      produk.qty++;
-      produk.carts_qty--;
       state.carts.forEach(function (cart) {
-        if (cart.idProduk == id) {
+        if (cart.id == id) {
           if (cart.qty === 0) {
             state.carts.splice(state.carts.indexOf(cart), 1);
             console.log(cart.subTotal);
@@ -5683,11 +5715,26 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
           }
         }
       });
+      produk.qty++;
+      produk.carts_qty--;
     },
-    triggerCheckout: function triggerCheckout(state) {
+    triggerCheckoutPlus: function triggerCheckoutPlus(state, id) {
+      var cart = state.carts.find(function (item) {
+        return item.id == id;
+      });
       state.carts.forEach(function (cart) {
         state.totalPrice += cart.subTotal;
       });
+      cart.subTotal = cart.qty * cart.price;
+    },
+    triggerCheckoutMinus: function triggerCheckoutMinus(state, id) {
+      var cart = state.carts.find(function (item) {
+        return item.id == id;
+      });
+      state.carts.forEach(function (cart) {
+        state.totalPrice -= cart.subTotal;
+      });
+      cart.subTotal = cart.qty * cart.price;
     }
   },
   actions: {
@@ -5697,8 +5744,11 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
     removeFromCart: function removeFromCart(id) {
       this.$store.commit("removeFromCart", id);
     },
-    triggerCheckout: function triggerCheckout(id) {
-      this.$store.commit("triggerCheckout");
+    triggerCheckoutPlus: function triggerCheckoutPlus(id) {
+      this.$store.commit("triggerCheckoutPlus");
+    },
+    triggerCheckoutMinus: function triggerCheckoutMinus(id) {
+      this.$store.commit("triggerCheckoutMinus");
     }
   },
   modules: {}
@@ -28712,7 +28762,7 @@ var render = function () {
               attrs: { type: "button" },
               on: {
                 click: function ($event) {
-                  return _vm.triggerCheckout()
+                  return _vm.triggerCheckoutPlus()
                 },
               },
             },
@@ -28763,7 +28813,7 @@ var render = function () {
               _vm._l(_vm.carts, function (item) {
                 return _c(
                   "tbody",
-                  { key: item.idProduk, staticClass: "table-info" },
+                  { key: item.id, staticClass: "table-info" },
                   [
                     _c("tr", [
                       _c("td", { staticClass: "col-1" }, [
@@ -28777,7 +28827,41 @@ var render = function () {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(item.artist))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(item.qty))]),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function ($event) {
+                                _vm.addToCart(item.id)
+                                _vm.triggerCheckoutPlus(item.id)
+                              },
+                            },
+                          },
+                          [_vm._v("+")]
+                        ),
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(item.qty) +
+                            "\n                        "
+                        ),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function ($event) {
+                                _vm.removeFromCart(item.id)
+                                _vm.triggerCheckoutMinus(item.id)
+                              },
+                            },
+                          },
+                          [_vm._v("-")]
+                        ),
+                      ]),
                       _vm._v(" "),
                       _c("td", [_vm._v("Rp. " + _vm._s(item.subTotal))]),
                     ]),
@@ -28788,13 +28872,91 @@ var render = function () {
             2
           ),
           _vm._v(" "),
-          _c("div", { staticClass: "d-flex justify-content-start" }, [
-            _c("h3", [_vm._v("Total: Rp. " + _vm._s(_vm.totalPrice))]),
-          ]),
+          _c(
+            "div",
+            { staticClass: "d-flex justify-content-start" },
+            [
+              _c("router-link", { attrs: { to: "/" } }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-info mx-2",
+                    attrs: { type: "button" },
+                  },
+                  [_vm._v("Kembali Ke Home")]
+                ),
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "d-flex justify-content-evenly mx-1" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-warning mx-4",
+                    attrs: {
+                      type: "button",
+                      "data-bs-toggle": "modal",
+                      "data-bs-target": "#exampleModal",
+                    },
+                  },
+                  [_vm._v("\n                    Checkout\n                ")]
+                ),
+                _vm._v(" "),
+                _c("h4", [
+                  _vm._v("Total: Rp. " + _vm._s(_vm.totalPrice) + "  "),
+                ]),
+                _vm._v(" "),
+                _c("h4", [_vm._v("Qty: " + _vm._s(_vm.totalCartsQty))]),
+              ]),
+            ],
+            1
+          ),
         ])
-      : _c("div", { staticClass: "else text-center" }, [
-          _c("h1", [_vm._v("Cart Masih Kosong")]),
+      : _c(
+          "div",
+          { staticClass: "else text-center" },
+          [
+            _c("h1", [_vm._v("Cart Masih Kosong")]),
+            _vm._v(" "),
+            _c("router-link", { attrs: { to: "/" } }, [
+              _c(
+                "button",
+                { staticClass: "btn btn-info", attrs: { type: "button" } },
+                [_vm._v("Kembali Ke Home")]
+              ),
+            ]),
+          ],
+          1
+        ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exampleModal",
+          tabindex: "-1",
+          "aria-labelledby": "exampleModalLabel",
+          "aria-hidden": "true",
+        },
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-body" }, [
+              _c("h3", [
+                _vm._v(
+                  "Total anda adalah: Rp. " + _vm._s(_vm.totalPrice) + "  "
+                ),
+              ]),
+            ]),
+            _vm._v(" "),
+            _vm._m(2),
+          ]),
         ]),
+      ]
+    ),
   ])
 }
 var staticRenderFns = [
@@ -28814,6 +28976,42 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Price")]),
       ]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h1",
+        { staticClass: "modal-title fs-5", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Pembayaran Berhasil!")]
+      ),
+      _vm._v(" "),
+      _c("button", {
+        staticClass: "btn-close",
+        attrs: {
+          type: "button",
+          "data-bs-dismiss": "modal",
+          "aria-label": "Close",
+        },
+      }),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary",
+          attrs: { type: "button", "data-bs-dismiss": "modal" },
+        },
+        [_vm._v("Selesai")]
+      ),
     ])
   },
 ]
@@ -44718,18 +44916,6 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	

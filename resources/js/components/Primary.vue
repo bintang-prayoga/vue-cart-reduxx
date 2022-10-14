@@ -23,7 +23,7 @@
         </div>
         <div class="router-cont mx-5 mt-2">
             <router-link to="/cart">
-                <button @click="triggerCheckout()" type="button" class="btn btn-info">Pergi Ke Cart</button>
+                <button @click="triggerCheckoutPlus()" type="button" class="btn btn-info">Pergi Ke Cart</button>
             </router-link>
             <h5>Barang di Cart {{ totalCartsQty }}</h5>
         </div>  
@@ -49,7 +49,7 @@ import { mapGetters, mapMutations } from 'vuex'
             ...mapMutations({
                 addToCart: 'addToCart', // this is the function from store.js
                 removeFromCart: 'removeFromCart',
-                triggerCheckout: 'triggerCheckout'
+                triggerCheckoutPlus: 'triggerCheckoutPlus'
             }),
 
         }

@@ -1,4 +1,3 @@
-import { times } from "lodash";
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -79,7 +78,7 @@ export default new Vuex.Store({
     mutations: {
             addToCart(state, id) {
                 let produk = state.allProduct.find((item) => item.id == id);
-                let cart = state.carts.find((item) => item.idProduk == id);
+                let cart = state.carts.find((item) => item.id == id);
                 
                 produk.carts_qty ++;
                 produk.qty --;
@@ -87,7 +86,7 @@ export default new Vuex.Store({
 
                 if (!cart) {
                     let cartItems = {
-                        idProduk: produk.id,
+                        id: produk.id,
                         album: produk.album,
                         artist: produk.artist,
                         price: produk.price,
@@ -110,11 +109,9 @@ export default new Vuex.Store({
                 } else {
                     state.totalCartsQty = 0;
                 }
-                produk.qty ++;
-                produk.carts_qty --;
-
+                
                 state.carts.forEach((cart) => {
-                    if (cart.idProduk == id) {
+                    if (cart.id == id) {
                         if (cart.qty === 0) {
                             state.carts.splice(state.carts.indexOf(cart), 1);
                             console.log(cart.subTotal)
@@ -125,12 +122,28 @@ export default new Vuex.Store({
                     }
                 });
 
+                produk.qty ++;
+                produk.carts_qty --;
             },
 
-            triggerCheckout(state) {
+            triggerCheckoutPlus(state, id) {
+                let cart = state.carts.find((item) => item.id == id);
+                
                 state.carts.forEach((cart) => {
                     state.totalPrice += cart.subTotal;
                 });
+                
+                cart.subTotal = cart.qty * cart.price;
+            },
+
+            triggerCheckoutMinus(state, id) {
+                let cart = state.carts.find((item) => item.id == id)
+                
+                state.carts.forEach((cart) => {
+                    state.totalPrice -= cart.subTotal;
+                });
+                
+                cart.subTotal = cart.qty * cart.price;
             }
     },
     actions: {
@@ -140,8 +153,11 @@ export default new Vuex.Store({
         removeFromCart(id) {
             this.$store.commit("removeFromCart", id)
         },
-        triggerCheckout(id) {
-            this.$store.commit("triggerCheckout")
+        triggerCheckoutPlus(id) {
+            this.$store.commit("triggerCheckoutPlus")
+        },
+        triggerCheckoutMinus(id){
+            this.$store.commit("triggerCheckoutMinus")
         }
     },
     modules: {
